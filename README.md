@@ -10,6 +10,16 @@ Text expander for Linux and X11
 - cmake
 
 # Compiling & Install
+
+## Arch Linux
+If you are using Arch Linux you should consider using the package I've uploaded
+in the AUR [stella-typer-git](https://aur.archlinux.org/packages/stella-typer-git/)
+this will do the compiling for you, and manage your package correctly.
+
+If you use pacaur it will also install the other AUR dependencies
+
+## Other
+
 ```
 ./configure (or cmake .)
 make
