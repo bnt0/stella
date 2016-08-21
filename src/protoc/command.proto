@@ -1,0 +1,44 @@
+package stellad.proto;
+
+message Control {
+  required SysAction action = 1 [default = OTHER];
+  repeated ShortcutDefinition shortcuts = 2;
+  repeated Setting settings = 3;
+  optional bool status = 4 [default = true];
+
+  enum SysAction {
+    OTHER = 0;
+    SHUTDOWN = 1;
+    RELOAD = 2;
+    IGNORE = 3;
+    STATUS = 4;
+    SAVE = 5;
+    LIST = 6;
+    RESPONSE = 7; // Response is ignored when reading
+  }
+
+}
+
+message ShortcutDefinition {
+  required string key = 1;
+  required Action action = 2;
+  optional string value = 3;
+  optional bool enabled = 4;
+  optional Mode mode = 5 [default = DEFAULT];
+
+  enum Mode {
+    DEFAULT = 0;
+  }
+}
+
+message Setting {
+  required string key = 1;
+  required Action act = 2;
+  optional string val = 3;
+}
+
+enum Action {
+  MODIFY = 0;
+  ADD = 1;
+  REM = 2;
+}
