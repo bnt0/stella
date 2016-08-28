@@ -74,7 +74,7 @@ void Dispatcher::tick() {
   using stellad::kTimeafterkey;
   using stellad::kTimebetweenkey;
   using stellad::kTimeafterdel;
-  if (keyhook.keysDown() == 0 && found != nullptr) {
+  if (keyhook.keysDown() && found != nullptr) {
     std::cout << "You typed " << found->getKey() << " -> "
         << found->getValue() << std::endl;  // Debug code will change to log
     robot.typeString(std::string(found->getKey().length(), '\b'), 0, 0);

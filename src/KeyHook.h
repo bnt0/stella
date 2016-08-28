@@ -57,7 +57,7 @@ class KeyHook {
 
   // Gets a vector buffer of keys
   virtual std::vector<keyboard_event_data>* getBuffer();
-  virtual int keysDown();
+  virtual bool keysDown();
   static void runHook(KeyHook* kh);
   // Sets up the uiohook on the back end and starts the threadHook thread
   virtual int setHook();
@@ -65,7 +65,7 @@ class KeyHook {
 
 
 } /* namespace stellad */
-extern int keysdown;
+extern bool lastReleased;
 void dispatch_proc(uiohook_event* const event);
 bool logger_proc(unsigned int level, const char *format, ...);
 
