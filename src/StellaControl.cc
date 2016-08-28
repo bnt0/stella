@@ -204,6 +204,7 @@ const std::string helptext = "h) this text\n"
 	"r) remove shortcut\n"
 	"l) list all shortcuts\n"
 	"s) save settings";
+
 void interactiveopt(char c) {
 	using namespace stellad::proto;
 	std::string works, key, value;
@@ -271,10 +272,9 @@ void interactive() {
 	std::string command;
 	std::cout << helptext << std::endl;
 	stellad::proto::Control mes;
-	while(true) {
+	while (getline(std::cin, command)) {
 		std::cout << "[> ";
-		getline(std::cin, command);
-		switch(command[0]) {
+		switch (command[0]) {
 		case 'a':
 		case 'm':
 		case 'r':
@@ -290,7 +290,7 @@ void interactive() {
 			break;
 		default:
 			std::cout << helptext << std::endl;
-		}	
+		}
 	}
 }
 
