@@ -32,6 +32,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <uiohook.h>
+#include <algorithm>
 
 extern std::mutex keyboard_queue_mutex;
 extern std::vector<keyboard_event_data> keyboard_queue;
@@ -55,14 +56,16 @@ public:
 
   // Gets a vector buffer of keys
   virtual std::vector<keyboard_event_data>* getBuffer();
-	static void runHook(KeyHook* kh);  
+  
+  virtual int keysDown();
+  static void runHook(KeyHook* kh);  
   // Sets up the uiohook on the back end and starts the threadHook thread
   virtual int setHook();
 };
 
 
 } /* namespace stellad */
-
+extern int keysdown;
 void dispatch_proc(uiohook_event* const event);
 bool logger_proc(unsigned int level, const char *format, ...);
 

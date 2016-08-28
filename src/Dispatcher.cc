@@ -73,11 +73,11 @@ void Dispatcher::tick() {
   using stellad::kTimeafterkey;
   using stellad::kTimebetweenkey;
   using stellad::kTimeafterdel;
-  if (found != nullptr) {
+  if (keyhook.keysDown() == 0 && found != nullptr) {
     std::cout << "You typed " << found->getKey() << " -> "
         << found->getValue() << std::endl; //Debug code
     robot.typeString(std::string(found->getKey().length(), '\b'), 0, 0);
-    std::this_thread::sleep_for (std::chrono::milliseconds(kTimeafterdel));
+    std::this_thread::sleep_for(std::chrono::milliseconds(kTimeafterdel));
     robot.typeString(found->getValue(), kTimebetweenkey, kTimeafterkey);
     delete found;
     workingString.clear();

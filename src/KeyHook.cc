@@ -22,6 +22,7 @@
 
 #include "KeyHook.h"
 
+int keysdown;
 std::mutex keyboard_queue_mutex;
 std::vector<keyboard_event_data> keyboard_queue;
 
@@ -40,6 +41,13 @@ std::vector<keyboard_event_data>* KeyHook::getBuffer() {
   buffer->swap(keyboard_queue);
   keyboard_queue_mutex.unlock();
   return buffer;
+}
+
+int KeyHook::keysDown() {
+  keyboard_queue_mutex.lock();
+  int copy = keysdown;
+  keyboard_queue_mutex.unlock();
+  return copy;
 }
 
 void KeyHook::runHook(KeyHook* kh) {
@@ -227,8 +235,11 @@ void dispatch_proc(uiohook_event * const event) {
       keyboard_queue_mutex.lock();
       keyboard_queue.push_back((event->data).keyboard);
       keyboard_queue_mutex.unlock();
+      keysdown++;
       break;
     case EVENT_KEY_RELEASED:
+      keysdown--;
+      keysdown = std::max(keysdown, 0);
       break;
     case EVENT_KEY_TYPED:
       keyboard_queue_mutex.lock();

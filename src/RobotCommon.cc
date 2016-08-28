@@ -63,12 +63,15 @@ void RobotCommon::typeCharNoSync (const char chr,
                       True,
                       CurrentTime);
   }
+  // Down
   XTestFakeKeyEvent(xdisplay,
                     XKeysymToKeycode(xdisplay, keysym),
                     True,
                     CurrentTime);
-  if (msdelaybetw)
+  if (msdelaybetw) {
     std::this_thread::sleep_for (std::chrono::milliseconds(msdelaybetw));
+  }
+  // Up
   XTestFakeKeyEvent(xdisplay,
                     XKeysymToKeycode(xdisplay, keysym),
                     False,
