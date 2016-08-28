@@ -238,8 +238,10 @@ void dispatch_proc(uiohook_event * const event) {
       keysdown++;
       break;
     case EVENT_KEY_RELEASED:
+      keyboard_queue_mutex.lock();
       keysdown--;
       keysdown = std::max(keysdown, 0);
+      keyboard_queue_mutex.unlock();
       break;
     case EVENT_KEY_TYPED:
       keyboard_queue_mutex.lock();
