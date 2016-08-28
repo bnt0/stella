@@ -1,4 +1,5 @@
- /*                                                                              
+/* Copyright 2016 Bradley Kennedy
+ *
  * This file is part of Stella.                                                        
  *                                                                                     
  *    Stella is free software: you can redistribute it and/or modify                   
