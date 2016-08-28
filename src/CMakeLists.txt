@@ -2,6 +2,9 @@
 # Required Cmake version
 cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 
+# Write binaries to bin/
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
 # Threads
 find_package( Threads )
 
@@ -27,4 +30,5 @@ target_compile_features(stella-config PRIVATE cxx_range_for)
 target_link_libraries(stella-config protobuf)
 
 ## Install
-install(PROGRAMS stellad stella-config DESTINATION bin)
+install(PROGRAMS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/stellad 
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/stella-config DESTINATION bin)
