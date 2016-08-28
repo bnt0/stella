@@ -1,4 +1,5 @@
- /*                                                                              
+/* Copyright 2016 Bradley Kennedy
+ *
  * This file is part of Stella.                                                        
  *                                                                                     
  *    Stella is free software: you can redistribute it and/or modify                   
@@ -23,12 +24,12 @@
 #include "PipeReader.h"
 
 namespace stellad {
-  PipeReader::PipeReader(){
+  PipeReader::PipeReader() {
     buffer = new std::string();
     this->fileloc = "/";
   }
 
-  PipeReader::PipeReader(std::string fileloc) : ready(false){
+  PipeReader::PipeReader(std::string fileloc) : ready(false) {
     buffer = new std::string();
     this->fileloc = fileloc;
     this->openPipe();
@@ -39,7 +40,8 @@ namespace stellad {
   }
 
   bool PipeReader::openPipe() {
-    if (mkfifo(this->fileloc.c_str(), S_IRUSR | S_IWUSR) == -1 && errno != EEXIST) {
+    if (mkfifo(this->fileloc.c_str(), S_IRUSR | S_IWUSR) == -1 &&
+         errno != EEXIST) {
       return false;
     }
     return true;
@@ -55,25 +57,22 @@ namespace stellad {
     tv.tv_sec = 0;
     tv.tv_usec = 1000;
     retval = select(fd+1, &rfds, NULL, NULL, &tv);
-		
     if (retval == -1) {
       std::cerr << "Error occured selecting file" << std::endl;
     } else if (retval) {
-			int num = 0;
-			char buff[64];
-			errno = 0;
-			do {
-				num = read(fd, buff, sizeof(buff));
-				if (num < 1)
-					break;
-				(* buffer) += std::string(buff, num);
-			} while (num != 0);
-			if (errno != 0 && errno != 11)
-				std::cerr << "Error occured while reading " << errno << std::endl;
-			
+      int num = 0;
+      char buff[64];
+      errno = 0;
+      do {
+        num = read(fd, buff, sizeof(buff));
+        if (num < 1)
+          break;
+        (* buffer) += std::string(buff, num);
+      } while (num != 0);
+      if (errno != 0 && errno != 11)
+        std::cerr << "Error occured while reading " << errno << std::endl;
       this->ready = true;
     }
-	
     close(fd);
   }
 

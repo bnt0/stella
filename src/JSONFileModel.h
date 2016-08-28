@@ -1,4 +1,5 @@
-/*                                                                              
+/* Copyright 2016 Bradley Kennedy
+ *
  * This file is part of Stella.                                                        
  *                                                                                     
  *    Stella is free software: you can redistribute it and/or modify                   
@@ -20,8 +21,8 @@
  *      Author: brad
  */
 
-#ifndef JSONFILEMODEL_H_
-#define JSONFILEMODEL_H_
+#ifndef SRC_JSONFILEMODEL_H_
+#define SRC_JSONFILEMODEL_H_
 
 #include <json/json.h>
 #include <fstream>
@@ -31,7 +32,7 @@
 namespace stellad {
 // JSONFileModel provides functions to write MDM data to a file or read it
 class JSONFileModel {
-public:
+ public:
   JSONFileModel();
   virtual ~JSONFileModel();
 
@@ -39,11 +40,11 @@ public:
   // fileLocation is the full path to the file the we are to load
   // saveableShortcuts we will copy the shortcuts in the json file into
   // settings a map that we need to copy the settings objects into
-  void loadFromFile(
+  void loadFromFile(  // TODO(brad) make these either const ref or pointer
     const std::string& fileLocation,
     std::vector<stellad::ShortcutDefinition>& saveableShortcuts,
     std::map<const std::string, std::string>& settings);
-    
+
   // save ModularDataModel data into the provided objects
   // fileLocation is the full path to the file the we are to load
   // saveableShortcuts we will copy the shortcuts into the json file
@@ -55,4 +56,4 @@ public:
 
 } /* namespace stellad */
 
-#endif /* JSONFILEMODEL_H_ */
+#endif  // SRC_JSONFILEMODEL_H_

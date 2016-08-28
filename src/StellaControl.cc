@@ -1,4 +1,5 @@
-/*                                                                              
+/* Copyright 2016 Bradley Kennedy
+ *
  * This file is part of Stella.                                                        
  *                                                                                     
  *    Stella is free software: you can redistribute it and/or modify                   
@@ -26,10 +27,13 @@ namespace stella {
 namespace ctrl {
   const std::string kHelpString =
   "Usage: stella-config ACTION OPTIONS VALUEOPT...\n"
-  "       stella-config {-s | --sys-action} {shutdown|reload|ignore|status|save|list}\n\n"
+  "       stella-config {-s | --sys-action}"
+  " {shutdown|reload|ignore|status|save|list}\n\n"
   "       Main operation mode:\n\n"
-  "        -I --interactive         ignore all other options and switch to interactive\n"
-  "        -h --help                ignore all other options and display this text\n\n"
+  "        -I --interactive         "
+  "ignore all other options and switch to interactive\n"
+  "        -h --help                "
+  "ignore all other options and display this text\n\n"
   "         ACTION := {-S --shortcut|-t --setting}\n"
   "        OPTIONS := {-a -add|-r --remove|-m --modify}\n"
   "       VALUEOPT := {-k --key|-v --value|-e --enabled|-M --mode}";
@@ -70,17 +74,16 @@ namespace ctrl {
       stella::ctrl::Type type, const std::string& key, const std::string &value,
       stellad::proto::Action action, bool enabled,
       stellad::proto::ShortcutDefinition_Mode mde) {
-		std::string command = compileCommand(type, key, value, action, enabled,
-				mde);
-			if (command.compare("") == 0) {
-				exit(EXIT_FAILURE);
-			}
-			if (sendMessage(command)) {
-				exit(EXIT_SUCCESS);
-			}
-			exit(EXIT_FAILURE);
-	}
-		
+    std::string command = compileCommand(type, key, value, action, enabled,
+        mde);
+      if (command.compare("") == 0) {
+        exit(EXIT_FAILURE);
+      }
+      if (sendMessage(command)) {
+        exit(EXIT_SUCCESS);
+      }
+      exit(EXIT_FAILURE);
+  }
 
   std::string compileCommand(
       stella::ctrl::Type type, const std::string& key, const std::string &value,
@@ -102,10 +105,10 @@ namespace ctrl {
       sd->set_val(value);
     } else if (type == stella::ctrl::Type::SysAction) {
       std::cerr << "Type set to SysAction, invalid function" << std::endl;
-			return "";
+      return "";
     } else {
       std::cerr << "No type set" << std::endl;
-			return "";
+      return "";
     }
 
     return stream.SerializeAsString();
@@ -143,7 +146,8 @@ namespace ctrl {
     }
     callbackfile += "stellad/callback-pipe";
     if (!stellad::utils::pipe_exists(callbackfile)) {
-      if (mkfifo(callbackfile.c_str(), S_IRUSR | S_IWUSR) == -1 && errno != EEXIST) {
+      if (mkfifo(callbackfile.c_str(), S_IRUSR | S_IWUSR) == -1
+          && errno != EEXIST) {
         std::cerr << "Problem making the fifo" << std::endl;
         return "";
       }
@@ -173,10 +177,12 @@ namespace ctrl {
         std::cout << "Printing shortcuts" << std::endl;
       for (int i = 0; i < result.shortcuts_size(); ++i) {
         const stellad::proto::ShortcutDefinition& crkey = result.shortcuts(i);
+        // TODO(brad) is there a construct for this noneing
         std::cout
             << "Key: `" << (crkey.has_key() ? crkey.key() : "none")
             << "` Value: `" << (crkey.has_value() ? crkey.value() : "none")
-            << "` Enabled? `" << (crkey.has_enabled() ? (crkey.enabled() ? "true" : "false") : "none")
+            << "` Enabled? `" << (crkey.has_enabled() ?
+                (crkey.enabled() ? "true" : "false") : "none")
             << "` Mode: `" << "Unimplemented`"
             << std::endl;
       }
@@ -191,114 +197,113 @@ namespace ctrl {
       }
 
     } else if (result.has_action() &&
-	       result.action() == stellad::proto::Control_SysAction_STATUS) {
+         result.action() == stellad::proto::Control_SysAction_STATUS) {
       std::cout << "####### Writing reply from stellad #######" << std::endl;
       std::cout << (result.status() == true
-		    ? "Enabled" : "Disabled") << std::endl;
+        ? "Enabled" : "Disabled") << std::endl;
     }
   }
-
-const std::string helptext = "h) this text\n"
-	"a) add new shortcut\n"
-	"m) modify shortcut\n"
-	"r) remove shortcut\n"
-	"l) list all shortcuts\n"
-	"s) save settings";
+// cpplint suggestion
+const char helptext[] = "h) this text\n"
+  "a) add new shortcut\n"
+  "m) modify shortcut\n"
+  "r) remove shortcut\n"
+  "l) list all shortcuts\n"
+  "s) save settings";
 
 void interactiveopt(char c) {
-	using namespace stellad::proto;
-	std::string works, key, value;
-	bool enabled = false;
-	ShortcutDefinition_Mode mode;
+  // TODO(brad) this should be switched to non namespace using statements
+  using namespace stellad::proto;
+  std::string works, key, value;
+  bool enabled = false;
+  ShortcutDefinition_Mode mode;
 
-	stellad::proto::Control mes;
-	std::string result;
-	switch(c) {
-		
-		case 'a':
-		case 'm':
-			do {
-				std::cout << "Specify key: ";
-				getline(std::cin, works);
-			} while (works.compare("") == 0);
-			key = works;
-			do {
-				std::cout << "Specify value: ";
-				getline(std::cin, works);
-			} while (works.compare("") == 0);
-			value = works;
-			do {
-				std::cout << "Specify enabled t/f [t] ";
-				getline(std::cin, works);
-			} while (works.compare("t") != 0 &&  works.compare("f") != 0 &&
-					works.compare("") != 0);
-			enabled = works.compare("t") == 0 || works.compare("") == 0;
-			do {
-				std::cout << "Specify mode 0/0 [0] ";
-				getline(std::cin, works);
-			} while (works.compare("0") != 0 && works.compare("") != 0);
-			mode = ShortcutDefinition_Mode_DEFAULT;
-			works = compileCommand(stella::ctrl::Type::ShortcutDefinition, 
-					key, value,	c == 'a' ? Action::ADD : Action::MODIFY, enabled,
-					ShortcutDefinition_Mode_DEFAULT);
-			if(!sendMessage(works))
-				std::cout << "Message failed to send" << std::endl;
-			break;
-		case 'r':
-			do {
-				std::cout << "Specify key: ";
-				getline(std::cin, works);
-			} while (works.compare("") == 0);
-			key = works;
-			works = compileCommand(stella::ctrl::Type::ShortcutDefinition,
-					key, "", Action::REM, false, ShortcutDefinition_Mode_DEFAULT);
-			if(!sendMessage(works))
-				std::cout << "Message failed to send" << std::endl;
-			break;
-		case 'l':
-			mes.set_action(Control_SysAction_LIST);
-			if(!sendMessage(mes.SerializeAsString()))
-				std::cout << "Message failed to send" << std::endl;
-			result = waitForCallback(setCallbackReader());
-			writeToostream(std::cout, result);
-			break;
-		default:
-			break;
-	}
-	
+  stellad::proto::Control mes;
+  std::string result;
+  switch (c) {
+    case 'a':
+    case 'm':
+      do {
+        std::cout << "Specify key: ";
+        getline(std::cin, works);
+      } while (works.compare("") == 0);
+      key = works;
+      do {
+        std::cout << "Specify value: ";
+        getline(std::cin, works);
+      } while (works.compare("") == 0);
+      value = works;
+      do {
+        std::cout << "Specify enabled t/f [t] ";
+        getline(std::cin, works);
+      } while (works.compare("t") != 0 &&  works.compare("f") != 0 &&
+          works.compare("") != 0);
+      enabled = works.compare("t") == 0 || works.compare("") == 0;
+      do {
+        std::cout << "Specify mode 0/0 [0] ";
+        getline(std::cin, works);
+      } while (works.compare("0") != 0 && works.compare("") != 0);
+      mode = ShortcutDefinition_Mode_DEFAULT;
+      works = compileCommand(stella::ctrl::Type::ShortcutDefinition,
+          key, value,  c == 'a' ? Action::ADD : Action::MODIFY, enabled,
+          ShortcutDefinition_Mode_DEFAULT);
+      if (!sendMessage(works))
+        std::cout << "Message failed to send" << std::endl;
+      break;
+    case 'r':
+      do {
+        std::cout << "Specify key: ";
+        getline(std::cin, works);
+      } while (works.compare("") == 0);
+      key = works;
+      works = compileCommand(stella::ctrl::Type::ShortcutDefinition,
+          key, "", Action::REM, false, ShortcutDefinition_Mode_DEFAULT);
+      if (!sendMessage(works))
+        std::cout << "Message failed to send" << std::endl;
+      break;
+    case 'l':
+      mes.set_action(Control_SysAction_LIST);
+      if (!sendMessage(mes.SerializeAsString()))
+        std::cout << "Message failed to send" << std::endl;
+      result = waitForCallback(setCallbackReader());
+      writeToostream(std::cout, result);
+      break;
+    default:
+      break;
+  }
 }
 
 void interactive() {
-	std::string command;
-	std::cout << helptext << std::endl;
-	stellad::proto::Control mes;
-	while (getline(std::cin, command)) {
-		std::cout << "[> ";
-		switch (command[0]) {
-		case 'a':
-		case 'm':
-		case 'r':
-		case 'l':
-			interactiveopt(command[0]);
-			break;
-		case 's':
-			mes.set_action(stellad::proto::Control_SysAction_SAVE); 
-				if(!sendMessage(mes.SerializeAsString()))
-					std::cout << "Stella setting save failed!" << std::endl;
-				else
-					std::cout << "Saved!" << std::endl;
-			break;
-		default:
-			std::cout << helptext << std::endl;
-		}
-	}
+  std::string command;
+  std::cout << helptext << std::endl;
+  stellad::proto::Control mes;
+  while (getline(std::cin, command)) {
+    std::cout << "[> ";
+    switch (command[0]) {
+    case 'a':
+    case 'm':
+    case 'r':
+    case 'l':
+      interactiveopt(command[0]);
+      break;
+    case 's':
+      mes.set_action(stellad::proto::Control_SysAction_SAVE);
+        if (!sendMessage(mes.SerializeAsString()))
+          std::cout << "Stella setting save failed!" << std::endl;
+        else
+          std::cout << "Saved!" << std::endl;
+      break;
+    default:
+      std::cout << helptext << std::endl;
+    }
+  }
 }
 
 } /* namespace ctrl */
 } /* namespace stella */
 
 int main(int argc, char* argv[]) {
-  int currarg; // current arg
+  int currarg;
   char option_index = 0;
   // time for some serious c
   using namespace stellad::proto;
@@ -314,8 +319,8 @@ int main(int argc, char* argv[]) {
   ShortcutDefinition_Mode mde = ShortcutDefinition_Mode_DEFAULT;
   if (argc == 1)
     stella::ctrl::printHelpAndDie();
-  while(true) {
-   int option_index = 0;
+  while (true) {
+    int option_index = 0;
     static struct option long_opts[] = {
       {"sys-action", required_argument, 0, 's'},
       {"shortcut",   no_argument, 0, 'S'},
@@ -356,7 +361,7 @@ int main(int argc, char* argv[]) {
         }
         type = stella::ctrl::Type::ShortcutDefinition;
         break;
-      case 't': // Setting
+      case 't':  // Setting
         if (type != stella::ctrl::Type::Null) {
           std::cerr << "You may only specify one of --shortcut, --sys-action, "
               << "or --setting" << std::endl;
@@ -401,25 +406,25 @@ int main(int argc, char* argv[]) {
         enabled = (std::string("true").
             compare(stella::ctrl::tolower(optarg)) == 0);
         break;
-      case 'M': // option is ignored for now
-        //switch (optarg) {
+      case 'M':  // option is ignored for now
+        // switch (optarg) {
         //  case "DEFAULT":
         //    break;
         //  default:
         //    break;
-        //}
+        // }
         break;
       case 'I':
         interactiveflag = true;
-				break;
+        break;
       case 'h':
         stella::ctrl::printHelpAndDie();
         break;
     }
   }
   if (interactiveflag) {
-		stella::ctrl::interactive();
-		exit(EXIT_SUCCESS);
+    stella::ctrl::interactive();
+    exit(EXIT_SUCCESS);
   }
   if (type == stella::ctrl::Type::ShortcutDefinition) {
     stella::ctrl::compileCommandAndDie(
@@ -432,12 +437,12 @@ int main(int argc, char* argv[]) {
     stellad::proto::Control mes;
     mes.set_action(sysopt);
     if (sysopt != stellad::proto::Control_SysAction_LIST &&
-	sysopt != stellad::proto::Control_SysAction_STATUS) {
+  sysopt != stellad::proto::Control_SysAction_STATUS) {
       exit(stella::ctrl::sendMessage(mes.SerializeAsString()) ?
           EXIT_SUCCESS : EXIT_FAILURE);
     } else {
       std::string callbackfile = stella::ctrl::setCallbackReader();
-      if(!stella::ctrl::sendMessage(mes.SerializeAsString())) {
+      if (!stella::ctrl::sendMessage(mes.SerializeAsString())) {
         std::cerr << "Problem writing to control socket" << std::endl;
         exit(EXIT_FAILURE);
       }
@@ -446,5 +451,4 @@ int main(int argc, char* argv[]) {
       exit(EXIT_SUCCESS);
     }
   }
-
 }

@@ -1,4 +1,5 @@
-/*                                                                              
+/* Copyright 2016 Bradley Kennedy
+ *
  * This file is part of Stella.                                                        
  *                                                                                     
  *    Stella is free software: you can redistribute it and/or modify                   
@@ -21,15 +22,15 @@
  */
 
 
-#ifndef FUTILS_H_
-#define FUTILS_H_
+#ifndef SRC_FUTILS_H_
+#define SRC_FUTILS_H_
 
 #include <string>
 #include <sstream>
 #include <sys/stat.h>
-#include <unistd.h> // Homedir
-#include <sys/types.h> // Homedir
-#include <pwd.h> // Homedir
+#include <unistd.h>  // Homedir
+#include <sys/types.h>  // Homedir
+#include <pwd.h>  // Homedir
 
 namespace stellad {
 namespace utils {
@@ -47,7 +48,7 @@ namespace utils {
   // @param filename path to the file to check.
   // @return true if the folder exists, false otherwise.
   bool file_exists(std::string foldername);
-  
+
   // Checks if a folder exists
   // @param foldername path to the folder to check.
   // @return true if the folder exists, false otherwise.
@@ -55,4 +56,4 @@ namespace utils {
 } /* namespace utils */
 } /* namespace stellad */
 
-#endif /* FUTILS_H_ */
+#endif  // SRC_FUTILS_H_

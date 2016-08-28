@@ -1,4 +1,5 @@
- /*                                                                              
+ /* Copyright 2016 Bradley Kennedy
+ *
  * This file is part of Stella.                                                        
  *                                                                                     
  *    Stella is free software: you can redistribute it and/or modify                   
@@ -20,13 +21,12 @@
  *      Author: brad
  */
 
-#ifndef DISPATCHER_H_
-#define DISPATCHER_H_
+#ifndef SRC_DISPATCHER_H_
+#define SRC_DISPATCHER_H_
 
 #include <iomanip>
 #include <string>
 #include <vector>
-#include <thread>
 #include <chrono>
 #include <uiohook.h>
 #include "RobotCommon.h"
@@ -44,11 +44,10 @@ extern const int kWorkingStrMax;
 enum StatusDis {
   Ready, Ignore,
 };
-  
 // Dispatcher handles all the data interactions between the different components
 // Holds all children classes as members, maintains the mainloop tick();
 class Dispatcher {
-private:
+ private:
   // Cut length of the working string
   const int kWorkingStrMin = 48;
   // Maximum length of the working string before we cut it
@@ -61,7 +60,8 @@ private:
   void manageSettings();
   // filename is the full path to the pipe
   // returns true if the response was sent
-  bool sendResponse(const std::string& filename, const std::string& streamstring);
+  bool sendResponse(const std::string& filename,
+      const std::string& streamstring);
   // Returns a new Control object with all the settings in it
   stellad::proto::Control * allShortcutsandSettings();
   KeyHook keyhook;
@@ -72,7 +72,8 @@ private:
   std::string workingString;
   std::string configGlobal;
   Status currStatus;
-public:
+
+ public:
   // Gets the configuration, if it can't find it, it builds the directory
   // structure, then it makes or read stellad-keys.json file and builds a
   // new PipeReader
@@ -93,9 +94,7 @@ public:
   void tick();
 };
 
-} /*
-* namespace stellad */
+}  // namespace stellad
 
 int main(int argc, const char* argv[]);
-#endif /*
-* DISPATCHER_H_ */
+#endif  // SRC_DISPATCHER_H_

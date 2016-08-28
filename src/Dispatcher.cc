@@ -1,4 +1,5 @@
-/*                                                                              
+/* Copyright 2016 Bradley Kennedy
+ *                                                                              
  * This file is part of Stella.                                                        
  *                                                                                     
  *    Stella is free software: you can redistribute it and/or modify                   
@@ -39,7 +40,8 @@ const int kTimeafterdel = 125;
   if (utils::file_exists(configGlobal + "stellad-keys.json")) {
     dataStore.loadKeysFromFile(configGlobal + "stellad-keys.json");
   } else {
-    dataStore.saveKeysFromFile(configGlobal + "stellad-keys.json"); // Makes file
+    // Makes new file
+    dataStore.saveKeysFromFile(configGlobal + "stellad-keys.json");
   }
 
   pipereader = new PipeReader(configGlobal + "control-pipe");
@@ -58,7 +60,6 @@ void Dispatcher::tick() {
   std::vector<keyboard_event_data>* buffer = keyhook.getBuffer();
   for (std::vector<keyboard_event_data>::iterator it = buffer->begin();
        it != buffer->end(); ++it) {
-
     workingString += keyhook.keyToMacroCode((*it));
     using stellad::kWorkingStrMin;
     using stellad::kWorkingStrMax;
@@ -75,7 +76,7 @@ void Dispatcher::tick() {
   using stellad::kTimeafterdel;
   if (keyhook.keysDown() == 0 && found != nullptr) {
     std::cout << "You typed " << found->getKey() << " -> "
-        << found->getValue() << std::endl; //Debug code
+        << found->getValue() << std::endl;  // Debug code will change to log
     robot.typeString(std::string(found->getKey().length(), '\b'), 0, 0);
     std::this_thread::sleep_for(std::chrono::milliseconds(kTimeafterdel));
     robot.typeString(found->getValue(), kTimebetweenkey, kTimeafterkey);
@@ -101,15 +102,15 @@ void Dispatcher::manageSettings() {
       break;
     case stellad::proto::Control::IGNORE:
       std::cout << "Received command to IGNORE" << std::endl;
-      currStatus = (currStatus == StatusDis::Ready ? StatusDis::Ignore
-		    : StatusDis::Ready);
+      currStatus = (currStatus == StatusDis::Ready ? StatusDis::Ignore :
+          StatusDis::Ready);
       break;
     case stellad::proto::Control::STATUS: {
       std::cout << "Received command to STATUS" << std::endl;
       stellad::proto::Control * msgs = new stellad::proto::Control();
       msgs->set_action(stellad::proto::Control::STATUS);
       if (currStatus == StatusDis::Ignore)
-	msgs->set_status(false);
+        msgs->set_status(false);
       sendResponse(configGlobal + "callback-pipe", msgs->SerializeAsString());
       delete msgs;
       break;
@@ -144,26 +145,27 @@ void Dispatcher::manageSettings() {
             "\"" << std::endl;
         break;
       case stellad::proto::MODIFY:
-	// Remove old key
+        // Remove old key
         dataStore.removeKey(stellad::ShortcutDefinition(
             copy->key(), copy->value(),
             copy->has_enabled() ? copy->enabled() : false,
             copy->has_mode() ? copy->mode() : MODE_DEFAULT));
-	// Add new key
+        // Add new key
         dataStore.insertKey(stellad::ShortcutDefinition(
             copy->key(), copy->value(),
             copy->has_enabled() ? copy->enabled() : false,
             copy->has_mode() ? copy->mode() : MODE_DEFAULT));
         break;
       default:
-        std::cerr << "Action was not one specified by the protocol" << std::endl;
+        std::cerr << "Action was not one specified by the protocol"
+            << std::endl;
         break;
     }
   }
-  // TODO Memory leak here if settings are sent, commented for now
-  //for (int i = 0; i < temp->settings_size(); ++i) {
+  // TODO(brad)  Memory leak here if settings are sent, commented for now
+  // for (int i = 0; i < temp->settings_size(); ++i) {
   //  const stellad::proto::Setting * copy = &(temp->settings(i));
-  //  // TODO We need an interface for settings changes, ignore for now
+  //  // TODO(brad) We need an interface for settings changes, ignore for now
   //}
   delete temp;
   std::cout << "Returning to main loop" << std::endl;
@@ -200,10 +202,11 @@ stellad::proto::Control * Dispatcher::allShortcutsandSettings() {
     newsd->set_key(it->getKey());
     newsd->set_value(it->getValue());
     newsd->set_enabled(it->isEnabled());
-    newsd->set_mode(::stellad::proto::ShortcutDefinition_Mode_DEFAULT); //TODO change this if we add more modes
+    // TODO(brad) change this if we add more modes
+    newsd->set_mode(::stellad::proto::ShortcutDefinition_Mode_DEFAULT);
   }
-  //TODO no settings for now, probably should just copy map
-  //for (std::map<const std::string, std::string> it = )
+  // TODO(brad) no settings for now, probably should just copy map
+  // for (std::map<const std::string, std::string> it = )
   delete allkeys;
   return result;
 }

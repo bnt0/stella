@@ -1,4 +1,5 @@
- /*                                                                              
+ /* Copyright 2016 Bradley Kennedy
+ *
  * This file is part of Stella.                                                        
  *                                                                                     
  *    Stella is free software: you can redistribute it and/or modify                   
@@ -20,20 +21,18 @@
  *      Author: brad
  */
 
-#ifndef VIRTUALTYPERINTERFACE_H_
-#define VIRTUALTYPERINTERFACE_H_
+#ifndef SRC_VIRTUALTYPERINTERFACE_H_
+#define SRC_VIRTUALTYPERINTERFACE_H_
 
 #include <string>
 
 // Interface for typing robot
-class VirtualTyperInterface
-{
-public:
+class VirtualTyperInterface {
+ public:
     virtual void typeString(const std::string string,
                             const int msdelaybetw, const int msdelayafter) = 0;
     virtual void typeChar(const char charactor,
                           const int msdelaybetw, const int msdelayafter) = 0;
-
 };
 
-#endif /* VIRTUALTYPERINTERFACE_H_ */
+#endif  // SRC_VIRTUALTYPERINTERFACE_H_

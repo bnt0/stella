@@ -1,4 +1,5 @@
-/*                                                                              
+/* Copyright 2016 Bradley Kennedy
+ * 
  * This file is part of Stella.                                                        
  *                                                                                     
  *    Stella is free software: you can redistribute it and/or modify                   
@@ -50,19 +51,21 @@ void JSONFileModel::loadFromFile(
   shortcuts = root["shortcuts"];
 
   // Load definitions
-  if (shortcuts != 0){ // TODO test for empty shortcuts list similar to :54
+  if (shortcuts != 0) {
     for (int index = 0; index < shortcuts.size(); ++index) {
       stellad::ShortcutDefinition temp = stellad::ShortcutDefinition(
-        shortcuts[index]["key"].asString(), shortcuts[index]["value"].asString(),
-        shortcuts[index]["enabled"].asBool(), shortcuts[index]["mode"].asInt());
+          shortcuts[index]["key"].asString(),
+          shortcuts[index]["value"].asString(),
+          shortcuts[index]["enabled"].asBool(),
+          shortcuts[index]["mode"].asInt());
       saveableShortcuts.push_back(temp);
     }
   }
-  //Load settings
-  if (settArray != 0) { // Not sure if this is requred
+  // Load settings
+  if (settArray != 0) {  // Not sure if this is requred
     std::string settingName;
     for (int index = 0; index < shortcuts.size(); ++index) {
-      if (!settArray[index].getMemberNames().empty()){
+      if (!settArray[index].getMemberNames().empty()) {
         settingName = settArray[index].getMemberNames()[0];
         settings[settingName] = settArray[index][settingName].asString();
       }

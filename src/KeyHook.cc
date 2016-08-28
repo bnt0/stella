@@ -1,4 +1,5 @@
-/*                                                                              
+/* Copyright 2016 Bradley Kennedy
+ *
  * This file is part of Stella.                                                        
  *                                                                                     
  *    Stella is free software: you can redistribute it and/or modify                   
@@ -52,72 +53,83 @@ int KeyHook::keysDown() {
 
 void KeyHook::runHook(KeyHook* kh) {
   int status = hook_run();
-	switch (status) {
-	case UIOHOOK_SUCCESS:
-	// Everything is ok.
-	break;
+  switch (status) {
+    case UIOHOOK_SUCCESS:
+      // Everything is ok.
+    break;
 
-	// System level errors.
-	case UIOHOOK_ERROR_OUT_OF_MEMORY:
-	logger_proc(LOG_LEVEL_ERROR, "Failed to allocate memory. (%#X)", status);
-	break;
+    // System level errors.
+    case UIOHOOK_ERROR_OUT_OF_MEMORY:
+      logger_proc(LOG_LEVEL_ERROR, "Failed to allocate memory. (%#X)", status);
+      break;
 
+    // X11 specific errors.
+    case UIOHOOK_ERROR_X_OPEN_DISPLAY:
+      logger_proc(LOG_LEVEL_ERROR,
+          "Failed to open X11 display. (%#X)", status);
+      break;
 
-	// X11 specific errors.
-	case UIOHOOK_ERROR_X_OPEN_DISPLAY:
-	logger_proc(LOG_LEVEL_ERROR, "Failed to open X11 display. (%#X)", status);
-	break;
+    case UIOHOOK_ERROR_X_RECORD_NOT_FOUND:
+      logger_proc(LOG_LEVEL_ERROR,
+          "Unable to locate XRecord extension. (%#X)", status);
+      break;
 
-	case UIOHOOK_ERROR_X_RECORD_NOT_FOUND:
-	logger_proc(LOG_LEVEL_ERROR, "Unable to locate XRecord extension. (%#X)", status);
-	break;
+    case UIOHOOK_ERROR_X_RECORD_ALLOC_RANGE:
+      logger_proc(LOG_LEVEL_ERROR,
+          "Unable to allocate XRecord range. (%#X)", status);
+      break;
 
-	case UIOHOOK_ERROR_X_RECORD_ALLOC_RANGE:
-	logger_proc(LOG_LEVEL_ERROR, "Unable to allocate XRecord range. (%#X)", status);
-	break;
+    case UIOHOOK_ERROR_X_RECORD_CREATE_CONTEXT:
+      logger_proc(LOG_LEVEL_ERROR,
+          "Unable to allocate XRecord context. (%#X)", status);
+      break;
 
-	case UIOHOOK_ERROR_X_RECORD_CREATE_CONTEXT:
-	logger_proc(LOG_LEVEL_ERROR, "Unable to allocate XRecord context. (%#X)", status);
-	break;
-
-	case UIOHOOK_ERROR_X_RECORD_ENABLE_CONTEXT:
-	logger_proc(LOG_LEVEL_ERROR, "Failed to enable XRecord context. (%#X)", status);
-	break;
-
-
-	// Windows specific errors.
-	case UIOHOOK_ERROR_SET_WINDOWS_HOOK_EX:
-	logger_proc(LOG_LEVEL_ERROR, "Failed to register low level windows hook. (%#X)", status);
-	break;
+    case UIOHOOK_ERROR_X_RECORD_ENABLE_CONTEXT:
+      logger_proc(LOG_LEVEL_ERROR,
+          "Failed to enable XRecord context. (%#X)", status);
+      break;
 
 
-	// Darwin specific errors.
-	case UIOHOOK_ERROR_AXAPI_DISABLED:
-	logger_proc(LOG_LEVEL_ERROR, "Failed to enable access for assistive devices. (%#X)", status);
-	break;
+    // Windows specific errors.
+    case UIOHOOK_ERROR_SET_WINDOWS_HOOK_EX:
+      logger_proc(LOG_LEVEL_ERROR,
+          "Failed to register low level windows hook. (%#X)", status);
+      break;
 
-	case UIOHOOK_ERROR_CREATE_EVENT_PORT:
-	logger_proc(LOG_LEVEL_ERROR, "Failed to create apple event port. (%#X)", status);
-	break;
 
-	case UIOHOOK_ERROR_CREATE_RUN_LOOP_SOURCE:
-	logger_proc(LOG_LEVEL_ERROR, "Failed to create apple run loop source. (%#X)", status);
-	break;
+    // Darwin specific errors.
+    case UIOHOOK_ERROR_AXAPI_DISABLED:
+      logger_proc(LOG_LEVEL_ERROR,
+          "Failed to enable access for assistive devices. (%#X)", status);
+      break;
 
-	case UIOHOOK_ERROR_GET_RUNLOOP:
-	logger_proc(LOG_LEVEL_ERROR, "Failed to acquire apple run loop. (%#X)", status);
-	break;
+    case UIOHOOK_ERROR_CREATE_EVENT_PORT:
+      logger_proc(LOG_LEVEL_ERROR,
+          "Failed to create apple event port. (%#X)", status);
+      break;
 
-	case UIOHOOK_ERROR_CREATE_OBSERVER:
-	logger_proc(LOG_LEVEL_ERROR, "Failed to create apple run loop observer. (%#X)", status);
-	break;
+    case UIOHOOK_ERROR_CREATE_RUN_LOOP_SOURCE:
+      logger_proc(LOG_LEVEL_ERROR,
+          "Failed to create apple run loop source. (%#X)", status);
+      break;
 
-	// Default error.
-	case UIOHOOK_FAILURE:
-	default:
-	logger_proc(LOG_LEVEL_ERROR, "An unknown hook error occurred. (%#X)", status);
-	break;
-	}
+    case UIOHOOK_ERROR_GET_RUNLOOP:
+      logger_proc(LOG_LEVEL_ERROR,
+          "Failed to acquire apple run loop. (%#X)", status);
+      break;
+
+    case UIOHOOK_ERROR_CREATE_OBSERVER:
+      logger_proc(LOG_LEVEL_ERROR,
+          "Failed to create apple run loop observer. (%#X)", status);
+      break;
+
+    // Default error.
+    case UIOHOOK_FAILURE:
+    default:
+      logger_proc(LOG_LEVEL_ERROR,
+          "An unknown hook error occurred. (%#X)", status);
+      break;
+  }
 }
 
 int KeyHook::setHook() {
@@ -125,12 +137,12 @@ int KeyHook::setHook() {
   hook_set_dispatch_proc(&dispatch_proc);
   threadHook = std::thread(runHook, this);
 
-  return 0;//status;
+  return 0;
 }
 
 std::string KeyHook::keyToMacroCode(keyboard_event_data key) {
-  if (key.keychar == 0xffff) {// This is a KeyRelease event
-    switch (key.keycode){
+  if (key.keychar == 0xffff) {  // This is a KeyRelease event
+    switch (key.keycode) {
       case VC_ESCAPE: return "$ESC$";
       case VC_F1: return "$F1$";
       case VC_F2: return "$F2$";
@@ -162,7 +174,7 @@ std::string KeyHook::keyToMacroCode(keyboard_event_data key) {
       case VC_RIGHT: return "$RIGHT$";
       case VC_DOWN: return "$DOWN$";
 
-      //Keypad buttons are not typed however should behave the same as typed
+      // Keypad buttons are not typed however should behave the same as typed
       case VC_NUM_LOCK: return "$NUMLK$";
       case VC_KP_DIVIDE: return "/";
       case VC_KP_MULTIPLY: return "*";
@@ -181,9 +193,9 @@ std::string KeyHook::keyToMacroCode(keyboard_event_data key) {
       case VC_KP_9: return "9";
       case VC_KP_0: return "0";
       case VC_KP_COMMA: return ",";
-      //Keypad end
+      // Keypad end
 
-      //We don't include shift as it's used to modify KeyType events
+      // We don't include shift as it's used to modify KeyType events
       case VC_CONTROL_L:
       case VC_CONTROL_R: return "$CTRL$";
       case VC_ALT_L:
@@ -195,8 +207,8 @@ std::string KeyHook::keyToMacroCode(keyboard_event_data key) {
     return "";
   } else {
       if (key.rawcode == '$') return "$$";
-      if (key.rawcode >= ' ' && key.rawcode <= '~') { // Covert char to str
-          return std::string(1, (char)key.rawcode);
+      if (key.rawcode >= ' ' && key.rawcode <= '~') {  // Covert char to str
+          return std::string(1, static_cast<char>(key.rawcode));
       }
       return "";
   }
@@ -231,7 +243,7 @@ bool logger_proc(unsigned int level, const char *format, ...) {
 
 void dispatch_proc(uiohook_event * const event) {
   switch (event->type) {
-    case EVENT_KEY_PRESSED: 
+    case EVENT_KEY_PRESSED:
       keyboard_queue_mutex.lock();
       keyboard_queue.push_back((event->data).keyboard);
       keyboard_queue_mutex.unlock();

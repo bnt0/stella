@@ -1,4 +1,5 @@
- /*                                                                              
+/* Copyright 2016 Bradley Kennedy
+ *
  * This file is part of Stella.                                                        
  *                                                                                     
  *    Stella is free software: you can redistribute it and/or modify                   
@@ -20,8 +21,8 @@
  *      Author: brad
  */
 
-#ifndef ROBOTCOMMON_H_
-#define ROBOTCOMMON_H_
+#ifndef SRC_ROBOTCOMMON_H_
+#define SRC_ROBOTCOMMON_H_
 
 #include <string>
 #include <iostream>
@@ -40,7 +41,7 @@ class RobotCommon : public VirtualTyperInterface {
   // Doesn't call sync to the xdisplay
   virtual void typeCharNoSync(const char charactor, const int msdelaybetw = 0,
                               const int msdelayafter = 0);
-public:
+ public:
   RobotCommon();
   virtual ~RobotCommon();
 
@@ -49,8 +50,8 @@ public:
   // msdelaybetw time in ms between key press and key release
   // msdelayafter time in ms after releasing key
   virtual void typeString(const std::string string,
-                          const int msdelaybetw = 0, const int msdelayafter = 0);
-                          
+      const int msdelaybetw = 0, const int msdelayafter = 0);
+
   // Type character to the screen
   // chr the actual character to print to the screen
   // msdelaybetw time in ms between key press and key release
@@ -61,4 +62,4 @@ public:
 
 } /* namespace stellad */
 
-#endif /* ROBOTCOMMON_H_ */
+#endif  // SRC_ROBOTCOMMON_H_

@@ -1,4 +1,5 @@
-/*                                                                              
+/* Copyright 2016 Bradley Kennedy
+ *
  * This file is part of Stella.                                                        
  *                                                                                     
  *    Stella is free software: you can redistribute it and/or modify                   
@@ -27,6 +28,8 @@ namespace utils {
 
   std::string findConfig() {
     std::string configdir;
+    // This codebase was meant to be multiplatform, but that fell out
+    // You can see some remnants here
     #ifdef __linux__
     char * xdgconf = getenv("XDG_CONFIG_HOME");
     if (xdgconf == nullptr) {
@@ -36,9 +39,10 @@ namespace utils {
       }
     }
     if (xdgconf == nullptr) {
+      // TODO(brad) cpplint recommended using getpwuid_r here
       struct passwd * pw = getpwuid(getuid());
       const char * homedir = pw->pw_dir;
-      configdir = std::string(homedir) + "/.config/"; // Extra // shouldn't matter
+      configdir = std::string(homedir) + "/.config/";
     }
     #endif /*__linux__*/
     return configdir;

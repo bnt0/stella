@@ -20,8 +20,8 @@
  *      Author: brad
  */
 
-#ifndef MODULARDATAMODEL_H_
-#define MODULARDATAMODEL_H_
+#ifndef SRC_MODULARDATAMODEL_H_
+#define SRC_MODULARDATAMODEL_H_
 
 #include <iostream>
 #include "ShortcutDefinition.h"
@@ -32,17 +32,19 @@ namespace stellad {
 
 // Handles JSONFileModel and MapModel interactions middle man
 class ModularDataModel {
-private:
+ private:
     JSONFileModel fileMod;
     MapModel memMod;
     std::map<const std::string, std::string> settings;
-public:
+
+ public:
   ModularDataModel();
   ~ModularDataModel();
 
   // Returns a pointer to a Shortcut defintion after searching the store
   // currentKeyString is searched fully for substrings that contain any key
-  stellad::ShortcutDefinition* checkForKeys(const std::string& currentKeyString);
+  stellad::ShortcutDefinition* checkForKeys(const std::string&
+      currentKeyString);
 
   // Insert the key into the memory map
   // insertSD we copy the SD into the mm
@@ -56,11 +58,11 @@ public:
 
   // Access the JSONFileModel and load the keys from the fileLocation
   const void loadKeysFromFile(const std::string& fileLocation);
-  
+
   // Access the JSONFileModel and save the keys to the fileLocation
   const void saveKeysFromFile(const std::string& fileLocation);
 };
 
 } /* namespace stellad */
 
-#endif /* MODULARDATAMODEL_H_ */
+#endif  // SRC_MODULARDATAMODEL_H_

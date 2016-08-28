@@ -1,4 +1,5 @@
- /*                                                                              
+/* Copyright 2016 Bradley Kennedy
+ *
  * This file is part of Stella.                                                        
  *                                                                                     
  *    Stella is free software: you can redistribute it and/or modify                   
@@ -20,8 +21,8 @@
  *      Author: brad
  */
 
-#ifndef SHORTCUTDEFINITION_H_
-#define SHORTCUTDEFINITION_H_
+#ifndef SRC_SHORTCUTDEFINITION_H_
+#define SRC_SHORTCUTDEFINITION_H_
 
 #include <string>
 
@@ -35,7 +36,7 @@ class ShortcutDefinition {
   std::string value;
   bool enabled;
   int mode;
-public:
+ public:
   ShortcutDefinition(const std::string& key, const std::string& value,
                      const bool& enabled, const int& mode);
   ShortcutDefinition(const ShortcutDefinition & clone);
@@ -50,4 +51,4 @@ public:
 
 } /* namespace stellad */
 
-#endif /* SHORTCUTDEFINITION_H_ */
+#endif  // SRC_SHORTCUTDEFINITION_H_

@@ -1,4 +1,5 @@
- /*                                                                              
+/* Copyright 2016 Bradley Kennedy
+ *
  * This file is part of Stella.                                                        
  *                                                                                     
  *    Stella is free software: you can redistribute it and/or modify                   
@@ -20,8 +21,8 @@
  *      Author: brad
  */
 
-#ifndef MAPMODEL_H_
-#define MAPMODEL_H_
+#ifndef SRC_MAPMODEL_H_
+#define SRC_MAPMODEL_H_
 
 #include <string>
 #include <vector>
@@ -35,7 +36,7 @@ namespace stellad {
 // for the working string
 class MapModel {
   std::map<std::string, stellad::ShortcutDefinition> mapShortcuts;
-public:
+ public:
   MapModel();
   MapModel(const MapModel& clone);
   virtual ~MapModel();
@@ -57,4 +58,4 @@ public:
 
 } /* namespace stellad */
 
-#endif /* MAPMODEL_H_ */
+#endif  // SRC_MAPMODEL_H_

@@ -1,4 +1,5 @@
-/*                                                                              
+/* Copyright 2016 Bradley Kennedy
+ *
  * This file is part of Stella.                                                        
  *                                                                                     
  *    Stella is free software: you can redistribute it and/or modify                   
@@ -30,10 +31,9 @@ ShortcutDefinition::ShortcutDefinition(
   this->enabled = enabled;
   this->key = key;
   this->value = value;
-
 }
 
-ShortcutDefinition::ShortcutDefinition(const ShortcutDefinition & clone){
+ShortcutDefinition::ShortcutDefinition(const ShortcutDefinition & clone) {
   key = clone.key;
   value = clone.value;
   enabled = clone.enabled;

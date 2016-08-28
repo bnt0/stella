@@ -1,4 +1,5 @@
- /*                                                                              
+/* Copyright 2016 Bradley Kennedy
+ *
  * This file is part of Stella.                                                        
  *                                                                                     
  *    Stella is free software: you can redistribute it and/or modify                   
@@ -20,8 +21,8 @@
  *      Author: brad
  */
 
-#ifndef KEYHOOK_H_
-#define KEYHOOK_H_
+#ifndef SRC_KEYHOOK_H_
+#define SRC_KEYHOOK_H_
 #include <string>
 #include <vector>
 #include <mutex>
@@ -41,13 +42,13 @@ namespace stellad {
 // Hooks to the keyboard of the user in order to transfer data back to the
 // dispatcher, also maintains a thread to prevent blocking
 class KeyHook {
-private:
+ private:
   // Buffer of keyboard_keys
   std::vector<keyboard_event_data> transfer_queue;
   // Thread to maintain for the backend stuff
   std::thread threadHook;
 
-public:
+ public:
   KeyHook();
   virtual ~KeyHook();
 
@@ -56,9 +57,8 @@ public:
 
   // Gets a vector buffer of keys
   virtual std::vector<keyboard_event_data>* getBuffer();
-  
   virtual int keysDown();
-  static void runHook(KeyHook* kh);  
+  static void runHook(KeyHook* kh);
   // Sets up the uiohook on the back end and starts the threadHook thread
   virtual int setHook();
 };
@@ -69,4 +69,4 @@ extern int keysdown;
 void dispatch_proc(uiohook_event* const event);
 bool logger_proc(unsigned int level, const char *format, ...);
 
-#endif /* KEYHOOK_H_ */
+#endif  // SRC_KEYHOOK_H_

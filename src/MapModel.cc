@@ -1,4 +1,5 @@
- /*                                                                              
+/* Copyright 2016 Bradley Kennedy
+ *
  * This file is part of Stella.                                                        
  *                                                                                     
  *    Stella is free software: you can redistribute it and/or modify                   
@@ -37,7 +38,8 @@ stellad::ShortcutDefinition * MapModel::checkForKeys(
     tempS = currentKeyString.substr(i);
     std::map<std::string, stellad::ShortcutDefinition>::iterator
         find = mapShortcuts.find(tempS);
-    if (find != mapShortcuts.end() && find->second.isEnabled()){ // Ignore disabled
+    // TODO(brad) Ignore disabled
+    if (find != mapShortcuts.end() && find->second.isEnabled()) {
       return new stellad::ShortcutDefinition(find->second);
     }
   }
@@ -60,9 +62,8 @@ std::vector<stellad::ShortcutDefinition>* MapModel::getAllKeys() {
   map<string, ShortcutDefinition>* m = &(this->mapShortcuts);
   vector<ShortcutDefinition>* result
     = new vector<ShortcutDefinition>;
-  for(map<string, ShortcutDefinition>::iterator it = m->begin();
-      it != m->end(); ++it ) {
-    result->push_back( it->second );
+  for (auto it = m->begin(); it != m->end(); ++it) {
+    result->push_back(it->second);
   }
   return result;
 }

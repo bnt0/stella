@@ -1,4 +1,5 @@
-/*                                                                              
+/* Copyright 2016 Bradley Kennedy
+ *
  * This file is part of Stella.                                                        
  *                                                                                     
  *    Stella is free software: you can redistribute it and/or modify                   
@@ -21,8 +22,8 @@
  */
 
 
-#ifndef STELLACONTROL_H_
-#define STELLACONTROL_H_
+#ifndef SRC_STELLACONTROL_H_
+#define SRC_STELLACONTROL_H_
 
 #include <getopt.h>
 #include <fstream>
@@ -86,4 +87,4 @@ void interactive();
 
 int main(int argc, char* argv[]);
 
-#endif /* STELLACONTROL_H_ */
+#endif  // SRC_STELLACONTROL_H_

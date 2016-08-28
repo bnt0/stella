@@ -1,4 +1,5 @@
- /*                                                                              
+/* Copyright 2016 Bradley Kennedy
+ *
  * This file is part of Stella.                                                        
  *                                                                                     
  *    Stella is free software: you can redistribute it and/or modify                   
@@ -27,19 +28,18 @@ namespace stellad {
 RobotCommon::RobotCommon() {
   int  event_basep, error_basep, majorp, minorp;
   if (!(xdisplay = XOpenDisplay(NULL))) {
-		std::cerr << "Unable to open display for Robot" << std::endl;
+    std::cerr << "Unable to open display for Robot" << std::endl;
     exit(1);
   }
   XTestGrabControl(xdisplay, True);
   XSynchronize(xdisplay, True);
-
 }
 
 RobotCommon::~RobotCommon() {
   XCloseDisplay(xdisplay);
 }
 
-void RobotCommon::typeCharNoSync (const char chr,
+void RobotCommon::typeCharNoSync(const char chr,
       const int msdelaybetw, const int msdelayafter) {
   int isUpper = 0;
   std::string uppSpecial = "!@#$%^&*()_+}{\":\?<>~|";
@@ -69,7 +69,7 @@ void RobotCommon::typeCharNoSync (const char chr,
                     True,
                     CurrentTime);
   if (msdelaybetw) {
-    std::this_thread::sleep_for (std::chrono::milliseconds(msdelaybetw));
+    std::this_thread::sleep_for(std::chrono::milliseconds(msdelaybetw));
   }
   // Up
   XTestFakeKeyEvent(xdisplay,
@@ -83,16 +83,15 @@ void RobotCommon::typeCharNoSync (const char chr,
                       CurrentTime);
   }
   if (msdelayafter)
-    std::this_thread::sleep_for (std::chrono::milliseconds(msdelayafter));
+    std::this_thread::sleep_for(std::chrono::milliseconds(msdelayafter));
 }
 
 void RobotCommon::typeString(const std::string stringi,
       const int msdelaybetw, const int msdelayafter) {
   using std::string;
-  for (string::const_iterator i = stringi.begin(); i != stringi.end(); ++i) {
+  for (auto i = stringi.begin(); i != stringi.end(); ++i) {
     typeCharNoSync((*i), msdelaybetw, msdelayafter);
   }
-
 }
 void RobotCommon::typeChar(const char chr,
       const int msdelaybetw, const int msdelayafter) {
