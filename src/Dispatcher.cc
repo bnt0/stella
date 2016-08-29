@@ -27,11 +27,13 @@ namespace stellad {
 
 const int kWorkingStrMin = 48;
 const int kWorkingStrMax = 64;
+
+// Constants for the number of milliseconds to sleep between / after inputs
 const int kTimebetweenkey = 0;
 const int kTimeafterkey = 0;
-const int kTimeafterdel = 125;
+const int kTimeafterdel = 0;
 
-  Dispatcher::Dispatcher() : currStatus(stellad::StatusDis::Ready) {
+Dispatcher::Dispatcher() : currStatus(stellad::StatusDis::Ready) {
   configGlobal = stellad::utils::findConfig();
 
   configGlobal += "stellad/";
