@@ -69,20 +69,19 @@ namespace ctrl {
     return data;
   }
 
-
   void compileCommandAndDie(
       stella::ctrl::Type type, const std::string& key, const std::string &value,
       stellad::proto::Action action, bool enabled,
       stellad::proto::ShortcutDefinition_Mode mde) {
     std::string command = compileCommand(type, key, value, action, enabled,
         mde);
-      if (command.compare("") == 0) {
-        exit(EXIT_FAILURE);
-      }
-      if (sendMessage(command)) {
-        exit(EXIT_SUCCESS);
-      }
+    if (command.compare("") == 0) {
       exit(EXIT_FAILURE);
+    }
+    if (sendMessage(command)) {
+      exit(EXIT_SUCCESS);
+    }
+    exit(EXIT_FAILURE);
   }
 
   std::string compileCommand(

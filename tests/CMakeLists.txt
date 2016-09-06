@@ -1,14 +1,10 @@
 include_directories(${CMAKE_BINARY_DIR}/src)
 set(testSources 
     testmapmodel.cc)
-set(src 
-    ../src/MapModel.h
-    ../src/MapModel.cc
-    ../src/ShortcutDefinition.h
-    ../src/ShortcutDefinition.cc)
-add_executable(tests ${testSources} ${src})
 
+add_executable(tests ${testSources})
 target_link_libraries(tests UnitTest++)
+target_link_libraries(tests Stella)
 
 # Run tests automatically after build
 add_custom_command(

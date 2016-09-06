@@ -42,22 +42,25 @@ enum Type {
   Setting,
   SysAction
 };
-// Prints usage to std::cout then ends program
+
+//! Prints usage to std::cout then ends program
 void printHelpAndDie();
 
-// Returns a SysAction that is equal to the opt
+//! Returns a SysAction that is equal to the opt
 stellad::proto::Control_SysAction sysActionHandler(const std::string& opt);
 
-// Quick function to string to lower
+//! Quick function to string to lower
 std::string tolower(const std::string& opt);
 
-// Makes a command to compile and sends to the stellad pipecontrol, if it fails
-// it will end the program
-// type of message to send
-// key of Shortcut definition or Key for shortcut
-// value of SD or shortcut
-// action shortcut or setting, or sysaction
-// enable true or false
+/*! 
+ * Makes a command to compile and sends to the stellad pipecontrol, if it fails
+ * it will end the program
+ * type of message to send
+ * key of Shortcut definition or Key for shortcut
+ * value of SD or shortcut
+ * action shortcut or setting, or sysaction
+ * enable true or false
+ */
 void compileCommandAndDie(
     stella::ctrl::Type type, const std::string& key, const std::string &value,
     stellad::proto::Action action, bool enabled,
@@ -69,8 +72,8 @@ std::string compileCommand(
     stellad::proto::Action action, bool enabled,
     stellad::proto::ShortcutDefinition_Mode mde);
 
-// Sends a string (must be stream) to the pipecontrol
-// streamstring the binary stream to send to the pipecontrol
+//! Sends a string (must be stream) to the pipecontrol
+//! streamstring the binary stream to send to the pipecontrol
 bool sendMessage(std::string streamstring);
 
 std::string setCallbackReader();
@@ -79,8 +82,9 @@ std::string waitForCallback(const std::string& fifoloc);
 
 void writeToostream(std::ostream& os, const std::string& input);
 void interactiveopt(char c);
-// Interactive mode
-void interactive();
+
+//! Gets and handles user input in interactive mode
+void runInteractive();
 
 } /* namespace ctrl */
 } /* namespace stella */

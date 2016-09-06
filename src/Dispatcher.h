@@ -24,18 +24,12 @@
 #ifndef SRC_DISPATCHER_H_
 #define SRC_DISPATCHER_H_
 
-#include <iomanip>
-#include <string>
-#include <vector>
-#include <chrono>
-#include <uiohook.h>
-#include "RobotCommon.h"
 #include "KeyHook.h"
 #include "ModularDataModel.h"
 #include "PipeReader.h"
-#include "FUtils.h"
-#include "protoc/command.pb.h"
+#include "RobotCommon.h"
 
+#include <string>
 
 namespace stellad {
 extern const int kWorkingStrMin;
@@ -44,57 +38,63 @@ extern const int kWorkingStrMax;
 enum StatusDis {
   Ready, Ignore,
 };
-// Dispatcher handles all the data interactions between the different components
-// Holds all children classes as members, maintains the mainloop tick();
+
+/*!
+ * Dispatcher handles all the data interactions between the different components
+ * Holds all children classes as members, maintains the mainloop tick();
+ */
 class Dispatcher {
+ public:
+  //! Gets the configuration, if it can't find it, it builds the directory
+  //! structure, then it makes or read stellad-keys.json file and builds a
+  //! new PipeReader
+  Dispatcher();
+
+  //! Cleans up pointer member objects
+  virtual ~Dispatcher();
+
+  //! Checks if the PipeReader has a stream and calls manageSettings if it does
+  //! gets KeyHook buffer and chekcs it against the datastore if we find anything
+  //! we use the robot to type the string to the screen
+  void tick();
+
+  //! Set the PipeReader to end, and then attempt to join the thread back
+  void endDaemon();
+
+  //! Set the KeyHook and then spawns a PipeReader thread
+  void startDaemon();
+
  private:
-  // Cut length of the working string
+
+  //! Polls the PipeReader for the command buffer pointer
+  //! If the Control buffer is a SysAction from stellad::proto then performs
+  //! the next action. Then it takes any shortcut, or settings options
+  //! and it inserts them into the ModularDataModel
+  void manageSettings();
+
+  //! \param [in] filename   the full path to the pipe
+  //! \returns true if the response was sent
+  bool sendResponse(const std::string& filename, 
+                    const std::string& streamstring);
+
+  //! Returns a new Control object with all the settings in it
+  stellad::proto::Control * allShortcutsandSettings();
+
+  //> Cut length of the working string
   const int kWorkingStrMin = 48;
-  // Maximum length of the working string before we cut it
+  //> Maximum length of the working string before we cut it
   const int kWorkingStrMax = 64;
 
-  // Polls the PipeReader for the command buffer pointer
-  // If the Control buffer is a SysAction from stellad::proto then performs
-  // the next action. Then it takes any shortcut, or settings options
-  // and it inserts them into the ModularDataModel
-  void manageSettings();
-  // filename is the full path to the pipe
-  // returns true if the response was sent
-  bool sendResponse(const std::string& filename,
-      const std::string& streamstring);
-  // Returns a new Control object with all the settings in it
-  stellad::proto::Control * allShortcutsandSettings();
-  KeyHook keyhook;
+  KeyHook keyHook;
   ModularDataModel dataStore;
   RobotCommon robot;
-  PipeReader * pipereader;
-  std::thread piperthread;
+  PipeReader *pipeReader;
+  std::thread piperThread;
   std::string workingString;
   std::string configGlobal;
   Status currStatus;
-
- public:
-  // Gets the configuration, if it can't find it, it builds the directory
-  // structure, then it makes or read stellad-keys.json file and builds a
-  // new PipeReader
-  Dispatcher();
-
-  // Cleans up pointer member objects
-  virtual ~Dispatcher();
-
-  // Set the PipeReader to end, and then attempt to join the thread back
-  void endDaemon();
-
-  // Set the KeyHook and then spawns a PipeReader thread
-  void startDaemon();
-
-  // Checks if the PipeReader has a stream and calls manageSettings if it does
-  // gets KeyHook buffer and chekcs it against the datastore if we find anything
-  // we use the robot to type the string to the screen
-  void tick();
 };
 
 }  // namespace stellad
 
-int main(int argc, const char* argv[]);
 #endif  // SRC_DISPATCHER_H_

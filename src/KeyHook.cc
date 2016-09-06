@@ -86,13 +86,11 @@ void KeyHook::runHook(KeyHook* kh) {
           "Failed to enable XRecord context. (%#X)", status);
       break;
 
-
     // Windows specific errors.
     case UIOHOOK_ERROR_SET_WINDOWS_HOOK_EX:
       logger_proc(LOG_LEVEL_ERROR,
           "Failed to register low level windows hook. (%#X)", status);
       break;
-
 
     // Darwin specific errors.
     case UIOHOOK_ERROR_AXAPI_DISABLED:
