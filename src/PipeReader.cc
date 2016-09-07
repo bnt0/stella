@@ -77,7 +77,7 @@ namespace stellad {
   }
 
   stellad::proto::Control * PipeReader::getCommandBuff() {
-    stellad::proto::Control * result = new stellad::proto::Control();
+    stellad::proto::Control *result = new stellad::proto::Control();
     if (!result->ParseFromString(*buffer)) {
       std::cerr << "Failed to parse Control message from buffer" << std::endl;
       delete buffer;

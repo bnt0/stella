@@ -31,7 +31,7 @@ namespace utils {
     // This codebase was meant to be multiplatform, but that fell out
     // You can see some remnants here
     #ifdef __linux__
-    char * xdgconf = getenv("XDG_CONFIG_HOME");
+    char *xdgconf = getenv("XDG_CONFIG_HOME");
     if (xdgconf == nullptr) {
       xdgconf = getenv("HOME");
       if (xdgconf != nullptr) {
@@ -40,8 +40,8 @@ namespace utils {
     }
     if (xdgconf == nullptr) {
       // TODO(brad) cpplint recommended using getpwuid_r here
-      struct passwd * pw = getpwuid(getuid());
-      const char * homedir = pw->pw_dir;
+      struct passwd *pw = getpwuid(getuid());
+      const char *homedir = pw->pw_dir;
       configdir = std::string(homedir) + "/.config/";
     }
     #endif /*__linux__*/
