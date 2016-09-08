@@ -39,10 +39,9 @@ enum StatusDis {
   Ready, Ignore,
 };
 
-/*!
- * Dispatcher handles all the data interactions between the different components
- * Holds all children classes as members, maintains the mainloop tick();
- */
+
+//! Dispatcher handles all the data interactions between the different components
+//! Holds all children classes as members, maintains the mainloop tick();
 class Dispatcher {
  public:
   //! Gets the configuration, if it can't find it, it builds the directory

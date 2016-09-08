@@ -35,7 +35,7 @@
 
 namespace stella {
 namespace ctrl {
-// enum Type refers to the type of message to send
+//> enum Type refers to the type of message to send
 enum Type {
   Null,
   ShortcutDefinition,
@@ -52,15 +52,13 @@ stellad::proto::Control_SysAction sysActionHandler(const std::string& opt);
 //! Quick function to string to lower
 std::string tolower(const std::string& opt);
 
-/*! 
- * Makes a command to compile and sends to the stellad pipecontrol, if it fails
- * it will end the program
- * type of message to send
- * key of Shortcut definition or Key for shortcut
- * value of SD or shortcut
- * action shortcut or setting, or sysaction
- * enable true or false
- */
+//! Makes a command to compile and sends to the stellad pipecontrol, if it fails
+//! it will end the program
+//! type of message to send
+//! key of Shortcut definition or Key for shortcut
+//! value of SD or shortcut
+//! action shortcut or setting, or sysaction
+//! enable true or false
 void compileCommandAndDie(
     stella::ctrl::Type type, const std::string& key, const std::string &value,
     stellad::proto::Action action, bool enabled,
