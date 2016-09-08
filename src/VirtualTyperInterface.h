@@ -26,7 +26,7 @@
 
 #include <string>
 
-// Interface for typing robot
+//! Interface for typing robot
 class VirtualTyperInterface {
  public:
     virtual void typeString(const std::string string,

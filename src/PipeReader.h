@@ -41,7 +41,8 @@
 #include "protoc/command.pb.h"
 
 namespace stellad {
-// Handles all interactions with IPC pipe reader
+
+//! Handles all interactions with IPC pipe reader
 class PipeReader {
  private:
   std::string * buffer;
@@ -50,26 +51,26 @@ class PipeReader {
 
  public:
   bool ready;
-  // Not to be used
+  //! Not to be used
   PipeReader();
 
-  // Creates a PipeReader with specified fileloc, when the pipe is opened
-  // it should create the pipe in the specified location
+  //! Creates a PipeReader with specified fileloc, when the pipe is opened
+  //! it should create the pipe in the specified location
   explicit PipeReader(std::string fileloc);
   ~PipeReader();
 
-  // Creates a new FIFO, if already present does nothing
-  // returns if there was an error or not
-  // (that wasn't based on already existing)
+  //! Creates a new FIFO, if already present does nothing
+  //! \returns if there was an error or not 
+  //!          (that wasn't based on already existing)
   bool openPipe();
 
-  // Reads all the contents of the fifo into a buffer
+  //! Reads all the contents of the fifo into a buffer
   void readAll();
 
-  // Returns the command buffer to be used in dispatcher
+  //! Returns the command buffer to be used in dispatcher
   stellad::proto::Control * getCommandBuff();
 
-  // Sets call back to be called once the PipeReader receives a message
+  //! Sets call back to be called once the PipeReader receives a message
   void setCallback(std::function<void(bool)> cb);
 };
 } /* namespace stellad */
