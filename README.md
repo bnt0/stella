@@ -50,3 +50,16 @@ will add the `<key>` with resultant text `<value>`
 ## Saving
 Configuration is not saved unless explicitly requested, use `stella-config -s save` to save
 
+# Building unittests and documentation
+
+You need to have [doxygen](http://www.stack.nl/~dimitri/doxygen/) installed to build the documentation. By default building documentation is disabled, to enable it, use `ccmake .` from the root of the repo and set the BuildDocs option to ON. Then use:
+```
+cmake .
+make docs
+```
+
+Building unit tests is disabled by default. To enable it, set BuildTests to true in `ccmake .`. You need to have the [UnitTest++](https://github.com/unittest-cpp/unittest-cpp) library installed to build and run the unittests.
+```
+cmake .
+make tests   # build and run all unit tests
+```
