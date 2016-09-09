@@ -31,7 +31,7 @@
 
 namespace stellad {
 
-// Handles JSONFileModel and MapModel interactions middle man
+//! Handles JSONFileModel and MapModel interactions middle man
 class ModularDataModel {
  private:
     JSONFileModel fileMod;
@@ -42,8 +42,8 @@ class ModularDataModel {
   ModularDataModel();
   ~ModularDataModel();
 
-  // Returns a pointer to a Shortcut defintion after searching the store
-  // currentKeyString is searched fully for substrings that contain any key
+  //! \returns a pointer to a Shortcut defintion after searching the store
+  //! \a currentKeyString is searched fully for substrings that contain any key
   stellad::ShortcutDefinition* checkForKeys(const std::string&
       currentKeyString);
 

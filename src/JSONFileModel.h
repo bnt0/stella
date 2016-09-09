@@ -30,25 +30,25 @@
 #include "ShortcutDefinition.h"
 
 namespace stellad {
-// JSONFileModel provides functions to write MDM data to a file or read it
+//! JSONFileModel provides functions to write MDM data to a file or read it
 class JSONFileModel {
  public:
   JSONFileModel();
   virtual ~JSONFileModel();
 
-  // LoadFromFile loads ModularDataModel data into the provided objects
-  // fileLocation is the full path to the file the we are to load
-  // saveableShortcuts we will copy the shortcuts in the json file into
-  // settings a map that we need to copy the settings objects into
+  //! Loads ModularDataModel data into the provided objects
+  //! \param fileLocation the full path to the file the we are to load
+  //! \param saveableShortcuts the shortcuts to be copied into the json file
+  //! \param settings a map that we need to copy the settings objects into
   void loadFromFile(  // TODO(brad) make these either const ref or pointer
     const std::string& fileLocation,
     std::vector<stellad::ShortcutDefinition>& saveableShortcuts,
     std::map<const std::string, std::string>& settings);
 
-  // save ModularDataModel data into the provided objects
-  // fileLocation is the full path to the file the we are to load
-  // saveableShortcuts we will copy the shortcuts into the json file
-  // settings we will copy the settings into the json file
+  //! Save ModularDataModel data into the provided objects
+  //! \param fileLocation the full path to the file the we are to load
+  //! \param saveableShortcuts the shortcuts to be copied into the json file
+  //! \param settings settings to be copied into the json file
   void saveToFile(const std::string& fileLocation,
                   std::vector<stellad::ShortcutDefinition>* saveableShortcuts,
                   std::map<const std::string, std::string> settings);

@@ -30,7 +30,7 @@ namespace stellad {
 
 const int MODE_DEFAULT = 0;
 
-// Just a bunch of data, immutable so thats cool
+//! Just a bunch of data, immutable so thats cool
 class ShortcutDefinition {
   std::string key;
   std::string value;

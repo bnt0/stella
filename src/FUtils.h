@@ -35,23 +35,23 @@
 namespace stellad {
 namespace utils {
 
-  // Finds the config directory
-  // @return a string containing the config directory, or "/"
+  //! Finds the config directory
+  //! \return a string containing the config directory, or "/"
   std::string findConfig();
 
-  // Checks if a pipe exists
-  // @param filename path to the file to check.
-  // @return true if the folder exists, false otherwise.
+  //! Checks if a pipe exists
+  //! \param filename path to the file to check.
+  //! \return true if the folder exists, false otherwise.
   bool pipe_exists(std::string pipename);
 
-  // Checks if a file exists
-  // @param filename path to the file to check.
-  // @return true if the folder exists, false otherwise.
+  //! Checks if a file exists
+  //! \param filename path to the file to check.
+  //! \return true if the folder exists, false otherwise.
   bool file_exists(std::string foldername);
 
-  // Checks if a folder exists
-  // @param foldername path to the folder to check.
-  // @return true if the folder exists, false otherwise.
+  //! Checks if a folder exists
+  //! \param foldername path to the folder to check.
+  //! \return true if the folder exists, false otherwise.
   bool folder_exists(std::string foldername);
 } /* namespace utils */
 } /* namespace stellad */

@@ -35,27 +35,27 @@
 #include "VirtualTyperInterface.h"
 
 namespace stellad {
-// Used to type to X11 screen
+//! Used to type to X11 screen
 class RobotCommon : public VirtualTyperInterface {
   Display* xdisplay;
-  // Doesn't call sync to the xdisplay
+  //> Doesn't call sync to the xdisplay
   virtual void typeCharNoSync(const char charactor, const int msdelaybetw = 0,
                               const int msdelayafter = 0);
  public:
   RobotCommon();
   virtual ~RobotCommon();
 
-  // Type string to the screen
-  // string the actual string to print to the screen
-  // msdelaybetw time in ms between key press and key release
-  // msdelayafter time in ms after releasing key
+  //! Type string to the screen
+  //! \param [in] string       the actual string to print to the screen
+  //! \param [in] msdelaybetw  time in ms between key press and key release
+  //! \param [in] msdelayafter time in ms after releasing key
   virtual void typeString(const std::string string,
       const int msdelaybetw = 0, const int msdelayafter = 0);
 
-  // Type character to the screen
-  // chr the actual character to print to the screen
-  // msdelaybetw time in ms between key press and key release
-  // msdelayafter time in ms after releasing key
+  //! Type character to the screen
+  //! \param chr          the actual character to print to the screen
+  //! \param msdelaybetw  time in ms between key press and key release
+  //! \param msdelayafter time in ms after releasing key
   virtual void typeChar(const char chr,
                         const int msdelaybetw = 0, const int msdelayafter = 0);
 };

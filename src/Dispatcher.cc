@@ -22,6 +22,13 @@
  */
 
 #include "Dispatcher.h"
+#include "FUtils.h"
+#include "protoc/command.pb.h"
+
+#include <iomanip>
+#include <chrono>
+#include <uiohook.h>
+#include <vector>
 
 namespace stellad {
 
@@ -46,23 +53,23 @@ Dispatcher::Dispatcher() : currStatus(stellad::StatusDis::Ready) {
     dataStore.saveKeysFromFile(configGlobal + "stellad-keys.json");
   }
 
-  pipereader = new PipeReader(configGlobal + "control-pipe");
+  pipeReader = new PipeReader(configGlobal + "control-pipe");
 }
 
 Dispatcher::~Dispatcher() {
-  delete pipereader;
+  delete pipeReader;
 }
 
 void Dispatcher::tick() {
-  pipereader->readAll();
-  if (pipereader->ready) {
+  pipeReader->readAll();
+  if (pipeReader->ready) {
     manageSettings();
-    pipereader->ready = false;
+    pipeReader->ready = false;
   }
-  std::vector<keyboard_event_data>* buffer = keyhook.getBuffer();
+  std::vector<keyboard_event_data>* buffer = keyHook.getBuffer();
   for (std::vector<keyboard_event_data>::iterator it = buffer->begin();
        it != buffer->end(); ++it) {
-    workingString += keyhook.keyToMacroCode((*it));
+    workingString += keyHook.keyToMacroCode((*it));
     using stellad::kWorkingStrMin;
     using stellad::kWorkingStrMax;
     // If the workingString is greater then max, cut it down to the min length
@@ -76,7 +83,7 @@ void Dispatcher::tick() {
   using stellad::kTimeafterkey;
   using stellad::kTimebetweenkey;
   using stellad::kTimeafterdel;
-  if (keyhook.keysDown() && found != nullptr) {
+  if (keyHook.keysDown() && found != nullptr) {
     std::cout << "You typed " << found->getKey() << " -> "
         << found->getValue() << std::endl;  // Debug code will change to log
     robot.typeString(std::string(found->getKey().length(), '\b'), 0, 0);
@@ -89,7 +96,7 @@ void Dispatcher::tick() {
 }
 
 void Dispatcher::manageSettings() {
-  stellad::proto::Control * temp = pipereader->getCommandBuff();
+  stellad::proto::Control * temp = pipeReader->getCommandBuff();
   std::cout << "We recieved a message" << std::endl;
   if (temp == nullptr) return;
   switch (temp->action()) {
@@ -218,19 +225,8 @@ void Dispatcher::endDaemon() {
 
 void Dispatcher::startDaemon() {
   std::cout << "Setting up Hook." << std::endl;
-  keyhook.setHook();
+  keyHook.setHook();
   std::cout << "Hook set." << std::endl;
 }
 
 } /* namespace stellad */
-
-int main(int argc, const char* argv[]) {
-  stellad::Dispatcher disp;
-  disp.startDaemon();
-  while (true) {
-    disp.tick();
-    std::this_thread::sleep_for(std::chrono::milliseconds(2));
-  }
-  disp.endDaemon();
-  return 0;
-}

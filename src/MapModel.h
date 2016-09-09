@@ -32,8 +32,8 @@
 #include "ShortcutDefinition.h"
 
 namespace stellad {
-// MapModel manages the ShortcutDefinition and provides search operations
-// for the working string
+//! MapModel manages the ShortcutDefinition and provides search operations
+//! for the working string
 class MapModel {
   std::map<std::string, stellad::ShortcutDefinition> mapShortcuts;
  public:
@@ -41,18 +41,18 @@ class MapModel {
   MapModel(const MapModel& clone);
   virtual ~MapModel();
 
-  // Supply long string and we find the best matching string (longest)
-  // @ return first ShortcutDefinition we find
+  //! Supply long string and we find the best matching string (longest)
+  //! \return first ShortcutDefinition we find
   stellad::ShortcutDefinition* checkForKeys(
       const std::string& currentKeyString);
 
-  // insertSD ShortcutDefinition to add into the MDM
+  //! insertSD ShortcutDefinition to add into the MDM
   void insertKey(const stellad::ShortcutDefinition& insertSD);
 
-  // keyDelete ShortcutDefinition to remove from the MDM by key
+  //! keyDelete ShortcutDefinition to remove from the MDM by key
   void removeKey(const stellad::ShortcutDefinition& keyDelete);
 
-  // Returns a vector copy of all the keys in the store
+  //! \returns a vector copy of all the keys in the store
   std::vector<stellad::ShortcutDefinition>* getAllKeys();
 };
 

@@ -39,28 +39,28 @@ extern std::mutex keyboard_queue_mutex;
 extern std::vector<keyboard_event_data> keyboard_queue;
 
 namespace stellad {
-// Hooks to the keyboard of the user in order to transfer data back to the
-// dispatcher, also maintains a thread to prevent blocking
+//! Hooks to the keyboard of the user in order to transfer data back to the
+//! dispatcher, also maintains a thread to prevent blocking
 class KeyHook {
- private:
-  // Buffer of keyboard_keys
-  std::vector<keyboard_event_data> transfer_queue;
-  // Thread to maintain for the backend stuff
-  std::thread threadHook;
-
  public:
   KeyHook();
   virtual ~KeyHook();
 
-  // Converts the keyboard_event_data struct from the uiohook lib to strings
+  //! Converts the keyboard_event_data struct from the uiohook lib to strings
   virtual std::string keyToMacroCode(keyboard_event_data key);
 
-  // Gets a vector buffer of keys
+  //! Gets a vector buffer of keys
   virtual std::vector<keyboard_event_data>* getBuffer();
   virtual bool keysDown();
   static void runHook(KeyHook* kh);
-  // Sets up the uiohook on the back end and starts the threadHook thread
+  //! Sets up the uiohook on the back end and starts the threadHook thread
   virtual int setHook();
+
+ private:
+  //> Buffer of keyboard_keys
+  std::vector<keyboard_event_data> transfer_queue;
+  //> Thread to maintain for the backend stuff
+  std::thread threadHook;
 };
 
 
