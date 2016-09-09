@@ -24,10 +24,11 @@
 #ifndef SRC_JSONFILEMODEL_H_
 #define SRC_JSONFILEMODEL_H_
 
-#include <json/json.h>
-#include <fstream>
-#include <iostream>
 #include "ShortcutDefinition.h"
+
+#include <string>
+#include <vector>
+#include <map>
 
 namespace stellad {
 //! JSONFileModel provides functions to write MDM data to a file or read it
@@ -37,21 +38,25 @@ class JSONFileModel {
   virtual ~JSONFileModel();
 
   //! Loads ModularDataModel data into the provided objects
-  //! \param fileLocation the full path to the file the we are to load
-  //! \param saveableShortcuts the shortcuts to be copied into the json file
-  //! \param settings a map that we need to copy the settings objects into
-  void loadFromFile(  // TODO(brad) make these either const ref or pointer
+  //! \param fileLocation [in] the full path to the file the we are to load
+  //! \param saveableShortcuts [out] 
+  //!        the shortcuts to be loaded from the JSON file
+  //! \param settings [out]
+  //!        settings to be loaded from the JSON file
+  //! \returns whether loading and parsing was successful
+  bool loadFromFile(  // TODO(brad) make these either const ref or pointer
     const std::string& fileLocation,
     std::vector<stellad::ShortcutDefinition>& saveableShortcuts,
     std::map<const std::string, std::string>& settings);
 
   //! Save ModularDataModel data into the provided objects
-  //! \param fileLocation the full path to the file the we are to load
-  //! \param saveableShortcuts the shortcuts to be copied into the json file
-  //! \param settings settings to be copied into the json file
-  void saveToFile(const std::string& fileLocation,
-                  std::vector<stellad::ShortcutDefinition>* saveableShortcuts,
-                  std::map<const std::string, std::string> settings);
+  //! \param [in] fileLocation the full path to the file the we are to load
+  //! \param [in] saveableShortcuts the shortcuts to be copied into the json file
+  //! \param [in] settings settings to be copied into the json file
+  //! \returns whether writing to file was successful
+  bool saveToFile(const std::string& fileLocation,
+                  const std::vector<stellad::ShortcutDefinition>* saveableShortcuts,
+                  const std::map<const std::string, std::string>& settings);
 };
 
 } /* namespace stellad */

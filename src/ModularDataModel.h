@@ -33,11 +33,6 @@ namespace stellad {
 
 //! Handles JSONFileModel and MapModel interactions middle man
 class ModularDataModel {
- private:
-    JSONFileModel fileMod;
-    MapModel memMod;
-    std::map<const std::string, std::string> settings;
-
  public:
   ModularDataModel();
   ~ModularDataModel();
@@ -47,21 +42,27 @@ class ModularDataModel {
   stellad::ShortcutDefinition* checkForKeys(const std::string&
       currentKeyString);
 
-  // Insert the key into the memory map
-  // insertSD we copy the SD into the mm
+  //! Insert the key into the memory map
+  //! insertSD we copy the SD into the mm
   void insertKey(const stellad::ShortcutDefinition& insertSD);
 
-  // Based on the keyDelete.key field we delete from the mm
+  //! Based on the keyDelete.key field we delete from the mm
   void removeKey(const stellad::ShortcutDefinition& keyDelete);
 
-  // Pass up a vector copy up to display
+  //! Pass up a vector copy up to display
   const std::vector<ShortcutDefinition>* getAllKeys();
 
-  // Access the JSONFileModel and load the keys from the fileLocation
+  //! Access the JSONFileModel and load the keys from the fileLocation
   const void loadKeysFromFile(const std::string& fileLocation);
 
-  // Access the JSONFileModel and save the keys to the fileLocation
+  //! Access the JSONFileModel and save the keys to the fileLocation
   const void saveKeysFromFile(const std::string& fileLocation);
+
+ private:
+    JSONFileModel fileMod;
+    MapModel memMod;
+    std::map<const std::string, std::string> settings;
+
 };
 
 } /* namespace stellad */

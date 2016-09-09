@@ -23,6 +23,11 @@
 
 #include "JSONFileModel.h"
 
+#include <json/json.h>
+#include <fstream>
+#include <iostream>
+#include <cassert>
+
 namespace stellad {
 
 JSONFileModel::JSONFileModel() {
@@ -31,7 +36,7 @@ JSONFileModel::JSONFileModel() {
 JSONFileModel::~JSONFileModel() {
 }
 
-void JSONFileModel::loadFromFile(
+bool JSONFileModel::loadFromFile(
     const std::string& fileLocation,
     std::vector<stellad::ShortcutDefinition>& saveableShortcuts,
     std::map<const std::string, std::string>& settings) {
@@ -41,42 +46,51 @@ void JSONFileModel::loadFromFile(
   Json::Value shortcuts;
 
   std::ifstream file(fileLocation, std::ifstream::binary);
+  // if file empty, return true
+  if (file.peek() == std::ifstream::traits_type::eof()) {
+    return true;
+  }
+
   bool parsingSuccessful = reader.parse(file, root);
   if (!parsingSuccessful) {
     // report to the user the failure and their locations in the document.
-    std::cerr  << "Failed to parse configuration\n"
+    std::cerr  << "Failed to parse configuration" << std::endl
                << reader.getFormattedErrorMessages() << std::endl;
+    return false;
   }
   settArray = root["settings"];
   shortcuts = root["shortcuts"];
 
-  // Load definitions
-  if (shortcuts != 0) {
-    for (int index = 0; index < shortcuts.size(); ++index) {
+  // Load definitions (shortcuts null if `shortcuts` doesn't exist yet in JSON) 
+  if (shortcuts != Json::Value()) {
+    for (unsigned int index = 0; index < shortcuts.size(); ++index) {
       stellad::ShortcutDefinition temp = stellad::ShortcutDefinition(
           shortcuts[index]["key"].asString(),
           shortcuts[index]["value"].asString(),
           shortcuts[index]["enabled"].asBool(),
-          shortcuts[index]["mode"].asInt());
+          shortcuts[index]["mode"].asInt()
+      );
       saveableShortcuts.push_back(temp);
     }
   }
-  // Load settings
-  if (settArray != 0) {  // Not sure if this is requred
+
+  // Load settings (settArray null if setting doesn't exist yet in the JSON)
+  if (settArray != Json::Value()) {
     std::string settingName;
-    for (int index = 0; index < shortcuts.size(); ++index) {
+    for (unsigned int index = 0; index < shortcuts.size(); ++index) {
       if (!settArray[index].getMemberNames().empty()) {
         settingName = settArray[index].getMemberNames()[0];
         settings[settingName] = settArray[index][settingName].asString();
       }
     }
   }
+  return true;
 }
 
-void JSONFileModel::saveToFile(
+bool JSONFileModel::saveToFile(
     const std::string& fileLocation,
-    std::vector<stellad::ShortcutDefinition>* saveableShortcuts,
-    std::map<const std::string, std::string> settings) {
+    const std::vector<stellad::ShortcutDefinition>* saveableShortcuts,
+    const std::map<const std::string, std::string>& settings) {
   using std::map;
   using std::vector;
   using std::string;
@@ -87,15 +101,14 @@ void JSONFileModel::saveToFile(
   Json::Value settArray;
   Json::Value shortcuts;
 
-  for (map<const string, string>::iterator it = settings.begin();
-       it != settings.end(); ++it) {
+  for (auto it = settings.begin(); it != settings.end(); ++it) {
     Json::Value sets = Json::Value();
     sets[it->first] = it->second;
     settArray.append(sets);
   }
 
-  for (vector<ShortcutDefinition>::iterator it = saveableShortcuts->begin();
-       it != saveableShortcuts->end(); ++it) {
+  assert(saveableShortcuts != nullptr);
+  for (auto it = saveableShortcuts->begin(); it != saveableShortcuts->end(); ++it) {
     Json::Value sets = Json::Value();
     sets["key"] = it->getKey();
     sets["value"] = it->getValue();
@@ -112,8 +125,12 @@ void JSONFileModel::saveToFile(
 
   ofstream file;
   file.open(fileLocation.c_str());
+  if (file.fail()) {
+    return false;
+  }
   file << styledWriter.write(root);
   file.close();
+  return true;
 }
 
 } /* namespace stellad */

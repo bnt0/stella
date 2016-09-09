@@ -25,18 +25,20 @@ set(stellad_src
     FUtils.cc)
 
 add_library(Stella ${stellad_src})
+target_link_libraries(Stella uiohook jsoncpp X11 Xtst protobuf)
+target_link_libraries(Stella ${CMAKE_THREAD_LIBS_INIT} ) # Add threads to stella
+
 add_executable(stellad Daemon.cc)
 target_link_libraries(stellad Stella)
+set_property(TARGET stellad PROPERTY CXX_STANDARD 11)
+set_property(TARGET stellad PROPERTY CXX_STANDARD_REQUIRED ON)
 
-target_compile_features(stellad PRIVATE cxx_range_for) # Compile for C++11 if req
-target_link_libraries(stellad uiohook jsoncpp X11 Xtst protobuf)
-target_link_libraries(stellad ${CMAKE_THREAD_LIBS_INIT} ) # Add threads to stellad
 
 ## stella-config
 add_executable(stella-config StellaControl.cc)
+set_property(TARGET stella-config PROPERTY CXX_STANDARD 11)
+set_property(TARGET stella-config PROPERTY CXX_STANDARD_REQUIRED ON)
 target_link_libraries(stella-config Stella)
-
-target_compile_features(stella-config PRIVATE cxx_range_for)
 target_link_libraries(stella-config protobuf)
 
 ## Install
