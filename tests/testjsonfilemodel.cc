@@ -53,7 +53,7 @@ TEST(LoadFromEmptyJsonObjectFileCorrectly) {
 }
 
 TEST(LoadWithMinimalShortcutValuesCorrectly) {
-  string fileName = create_temp_file("/tmp/stellaemptyjsonfile.XXXXXX", 
+  string fileName = create_temp_file("/tmp/stellajsonfile.XXXXXX", 
       "{\"shortcuts\": [{\"key\": \"k\", \"value\": \"val\"}]}");
   JSONFileModel jsonFileModel;
   vector<stellad::ShortcutDefinition> shortcuts;
@@ -65,6 +65,48 @@ TEST(LoadWithMinimalShortcutValuesCorrectly) {
   CHECK_EQUAL(1, shortcuts.size());
   CHECK(!shortcuts[0].isEnabled());
   CHECK_EQUAL(shortcuts[0].getMode(), 0);
+  CHECK_EQUAL(shortcuts[0].getKey(), "k");
+  CHECK_EQUAL(shortcuts[0].getValue(), "val");
+
+  unlink(fileName.c_str());
+}
+
+TEST(LoadCompleteShortcutCorrectly) {
+  string fileName = create_temp_file("/tmp/stellajsonfile.XXXXXX", 
+      "{\"shortcuts\": ["
+        "{\"key\": \"k\","
+        "\"value\": \"val\","
+        "\"mode\": 1,"
+        "\"enabled\": true"
+        "}"
+      "]}");
+  JSONFileModel jsonFileModel;
+  vector<stellad::ShortcutDefinition> shortcuts;
+  map<const string, string> settings;
+  bool isSuccessful = jsonFileModel.loadFromFile(fileName, shortcuts, settings);
+
+  CHECK(isSuccessful);
+  CHECK(settings.empty());
+  CHECK_EQUAL(1, shortcuts.size());
+  CHECK(shortcuts[0].isEnabled());
+  CHECK_EQUAL(shortcuts[0].getMode(), 1);
+  CHECK_EQUAL(shortcuts[0].getKey(), "k");
+  CHECK_EQUAL(shortcuts[0].getValue(), "val");
+
+  unlink(fileName.c_str());
+}
+
+TEST(LoadEmptySettingsCorrectly) {
+  string fileName = create_temp_file("/tmp/stellajsonfile.XXXXXX", 
+      "{\"settings\": null}");
+  JSONFileModel jsonFileModel;
+  vector<stellad::ShortcutDefinition> shortcuts;
+  map<const string, string> settings;
+  bool isSuccessful = jsonFileModel.loadFromFile(fileName, shortcuts, settings);
+
+  CHECK(isSuccessful);
+  CHECK(settings.empty());
+  CHECK(shortcuts.empty());
 
   unlink(fileName.c_str());
 }
